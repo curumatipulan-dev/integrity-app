@@ -1,16 +1,18 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 
+// React Native 0.72: the react { } extension has no autolinkLibrariesWithApp().
+// Autolinking is applied through native_modules.gradle at the bottom of this file.
 react {
-    autolinkLibrariesWithApp()
 }
 
-def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
     namespace "com.integrityai"
     ndkVersion rootProject.ext.ndkVersion
     compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -27,7 +29,9 @@ android {
     }
 
     buildTypes {
-        debug {}
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             signingConfig signingConfigs.debug
             minifyEnabled false
@@ -44,3 +48,5 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
