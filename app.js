@@ -44,15 +44,22 @@ const HEARTBEAT_INTERVAL = 5000;
 const AUTO_SAVE_INTERVAL = 10000; // Salvează la fiecare 10 secunde
 
 // ===== CHEI API =====
+// Cheia Lovable AI (se salveaza local, o singura data)
+let LOVABLE_API_KEY = '';
+const LOVABLE_AI_URL = 'https://ai.gateway.lovable.dev/v1/chat/completions';
+
 const AI_APIS = [
-  {
-    name: 'DeepSeek',
-    url: 'https://api.deepseek.com/v1/chat/completions',
-    key: 'sk-or-v1-8a9b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f',
-    model: 'deepseek-chat',
-    free: true
-  }
+  { name: 'Gemini 3.6 Flash', url: LOVABLE_AI_URL, model: 'google/gemini-3.6-flash', free: true },
+  { name: 'Gemini 3.1 Pro', url: LOVABLE_AI_URL, model: 'google/gemini-3.1-pro-preview', free: false },
+  { name: 'GPT-5.4', url: LOVABLE_AI_URL, model: 'openai/gpt-5.4', free: false },
+  { name: 'GPT-5.4 Mini', url: LOVABLE_AI_URL, model: 'openai/gpt-5.4-mini', free: false },
+  { name: 'Gemini 3.5 Flash', url: LOVABLE_AI_URL, model: 'google/gemini-3.5-flash', free: true }
 ];
+
+const aiHeaders = () => ({
+  'Content-Type': 'application/json',
+  'Lovable-API-Key': LOVABLE_API_KEY
+});
 
 const SYSTEM_PROMPT = `Ești Integrity AI Pro, un asistent de codare de nivel enterprise, similar cu Loveable.dev.
 
@@ -388,6 +395,7 @@ Cum te pot ajuta astăzi?`
     createStorageDir();
     loadProjects();
     loadGitHubToken();
+    loadLovableKey();
     loadConversations();
     startHeartbeat();
     startAutoSave();
@@ -421,6 +429,13 @@ Cum te pot ajuta astăzi?`
       const items = await RNFS.readDir(STORAGE_PATH);
       const dirs = items.filter(i => i.isDirectory());
       setProjects(dirs.map(d => ({ name: d.name, path: d.path })));
+    } catch (error) {}
+  };
+
+  const loadLovableKey = async () => {
+    try {
+      const k = await RNFS.readFile(STORAGE_PATH + '/lovable_api_key.txt', 'utf8');
+      if (k.trim()) LOVABLE_API_KEY = k.trim();
     } catch (error) {}
   };
 
@@ -523,10 +538,7 @@ Cum te pot ajuta astăzi?`
           top_p: 0.95
         },
         {
-          headers: {
-            'Authorization': `Bearer ${api.key}`,
-            'Content-Type': 'application/json'
-          },
+          headers: aiHeaders(),
           timeout: 60000
         }
       );
@@ -892,10 +904,7 @@ Cum te pot ajuta astăzi?`
           max_tokens: 8000
         },
         {
-          headers: {
-            'Authorization': `Bearer ${api.key}`,
-            'Content-Type': 'application/json'
-          }
+          headers: aiHeaders()
         }
       );
       
