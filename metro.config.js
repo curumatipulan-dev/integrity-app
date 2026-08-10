@@ -1,9 +1,11 @@
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
-/**
- * Metro configuration
- * https://facebook.github.io/metro/docs/configuration
- */
-const config = {};
+const defaultConfig = getDefaultConfig(__dirname);
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+const config = {
+  resolver: {
+    assetExts: [...defaultConfig.resolver.assetExts, 'cjs', 'node'],
+  },
+};
+
+module.exports = mergeConfig(defaultConfig, config);
