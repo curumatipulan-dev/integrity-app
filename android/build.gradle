@@ -22,6 +22,16 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
-        maven { url 'https://www.jitpack.io' }
+        maven { url "https://www.jitpack.io" }
+    }
+    configurations.all {
+        resolutionStrategy {
+            force "androidx.appcompat:appcompat:1.6.1"
+            force "androidx.core:core:1.10.1"
+            force "androidx.core:core-ktx:1.10.1"
+            force "androidx.activity:activity:1.7.2"
+            force "androidx.fragment:fragment:1.5.7"
+            force "com.google.android.material:material:1.9.0"
+        }
     }
 }
