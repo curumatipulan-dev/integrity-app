@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        buildToolsVersion = "35.0.0"
+        buildToolsVersion = "34.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 35
+        compileSdkVersion = 34
         targetSdkVersion = 34
         ndkVersion = "23.1.7779620"
         kotlinVersion = "1.8.0"
@@ -24,14 +24,39 @@ allprojects {
         mavenLocal()
         maven { url "https://www.jitpack.io" }
     }
+
+    configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            def g = details.requested.group
+            def n = details.requested.name
+            if (g == "androidx.core" && (n == "core" || n == "core-ktx")) {
+                details.useVersion "1.10.1"
+            }
+            if (g == "androidx.appcompat") {
+                details.useVersion "1.6.1"
+            }
+            if (g == "androidx.activity") {
+                details.useVersion "1.7.2"
+            }
+            if (g == "androidx.fragment") {
+                details.useVersion "1.5.7"
+            }
+            if (g == "androidx.emoji2") {
+                details.useVersion "1.3.0"
+            }
+            if (g == "com.google.android.material" && n == "material") {
+                details.useVersion "1.9.0"
+            }
+        }
+    }
 }
 
 subprojects { subproject ->
     afterEvaluate {
         if (subproject.hasProperty("android")) {
             subproject.android {
-                compileSdkVersion 35
-                buildToolsVersion "35.0.0"
+                compileSdkVersion 34
+                buildToolsVersion "34.0.0"
             }
         }
     }
