@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        buildToolsVersion = "33.0.0"
+        buildToolsVersion = "35.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 33
-        targetSdkVersion = 33
+        compileSdkVersion = 35
+        targetSdkVersion = 34
         ndkVersion = "23.1.7779620"
         kotlinVersion = "1.8.0"
     }
@@ -23,15 +23,5 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven { url "https://www.jitpack.io" }
-    }
-    configurations.all {
-        resolutionStrategy {
-            force "androidx.appcompat:appcompat:1.6.1"
-            force "androidx.core:core:1.10.1"
-            force "androidx.core:core-ktx:1.10.1"
-            force "androidx.activity:activity:1.7.2"
-            force "androidx.fragment:fragment:1.5.7"
-            force "com.google.android.material:material:1.9.0"
-        }
     }
 }
